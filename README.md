@@ -10,7 +10,8 @@ Wanted to test a simple way of building an small application
 * Data used between steps in logic is left as plain text files for debugging purposes
 
 ## Run
-./main.bash > hnfeed.xml
+    ./main.bash > hnfeed.xml
+    curl -F "hnfeed.xml=@hnfeed.xml" "https://usr:pwd@neocities.org/api/upload"
 
 ## Size Limitations
 Due to limits in rss readers the size is kept down for every post
