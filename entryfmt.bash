@@ -1,5 +1,9 @@
 #!/bin/bash
 
+uri_escape () {
+  echo $1 | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&#39;/g'
+}
+
 parse_entry () {
   entry=$(cat $1)
   letterdate=$2
@@ -34,7 +38,8 @@ parse_entry () {
   comments=$(echo $comments| sed -E 's/\]\]>//g')
 
   # escape &
-  url=$(echo $url| sed -E 's/&/&amp;/g')
+  url=$(uri_escape "$url")
+  title=$(uri_escape "$title")
 
   # dates, we need to parse rfc 2822 to iso 8601 fmt to get real dates
   date=$(date +"%Y-%m-%dT%H:%M:%SZ")
