@@ -65,5 +65,5 @@ letterdate=$1
 
 for entry in *
 do
-  parse_entry $entry "$letterdate" #>> ../../../newhnfeed.xml
+  parse_entry $entry "$letterdate"
 done
