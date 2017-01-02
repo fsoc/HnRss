@@ -1,5 +1,16 @@
 #!/bin/bash
 
+base_url_identical () {
+  url1=$(echo $1|sed -E 's/([^&]*).*/\1/')
+  url2=$(echo $2|sed -E 's/([^&]*).*/\1/')
+  if [ "$url1" == "$url2" ]
+  then
+    return 0
+  else
+    return 1
+  fi
+}
+
 uri_escape () {
   echo $1 | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&#39;/g'
 }
@@ -8,11 +19,13 @@ parse_entry () {
   entry=$(cat $1)
   letterdate=$2
 
+  max_comments=100
   uuid=$(uuidgen)
   has_two_links=$(echo $entry| grep -E '/.*utm_term=([a-z]*).*utm_term=([a-z]*)'| wc -l)
   if [ "$has_two_links" -lt 1 ] 
   then
     # has one link
+    max_comments=1000
     type="ask_hn"
     title=$(echo $entry|sed -E 's/.*Comments:\s[0-9]+">([^<]*).*/\1/')
     commentsurl=$(echo $entry| sed -E 's/.*href="([^"]*)".*/\1/')
@@ -24,12 +37,20 @@ parse_entry () {
     title=$(echo $entry|sed -E 's/.*Comments:\s[0-9]+">([^<]*).*/\1/')
     url=$(echo $entry| sed -E 's/.*href="([^"]*)".*href="([^"]*)".*/\1/')
     commentsurl=$(echo $entry| sed -E 's/.*href="([^"]*)".*href="([^"]*)".*/\2/')
-    # use curl
-    text=$(../../../unvisify.bash "$url")
+
+    if base_url_identical $url $commentsurl
+    then
+      max_comments=1000
+      text="..."
+      url=$commentsurl
+    else
+      # get univisified text
+      text=$(../../../unvisify.bash "$url")
+    fi
   fi
 
-  # use curl
-  comments=$(curl $commentsurl -L -s| head -n 100)
+  # use curl for comments
+  comments=$(curl $commentsurl -L -s| head -n $max_comments)
 
   # remove any CDATA entries
   text=$(echo $text| sed -E 's/<!\[CDATA\[//g')
@@ -55,7 +76,6 @@ parse_entry () {
   <summary type=\"html\"><![CDATA[
   $entry
   $text
-  $entry
   $comments
   ]]></summary>
   </entry>"
