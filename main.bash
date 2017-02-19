@@ -8,7 +8,7 @@ curl -s -L $rssfeed > feed.xml
 csplit -q -f hnletter feed.xml '/<item>/' {*}
 mv hnletter* letters
 
-uuid=$(uuidgen)
+md5id=$(cat feed.xml |grep pubDate |head -n 1 |md5sum |sed -E 's/\s.*//')
 date=$(date +"%Y-%m-%dT%H:%M:%SZ")
 
 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
@@ -19,7 +19,7 @@ echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 <author>
 <name>Anonymous User</name>
 </author>
-<id>urn:uuid:$uuid</id>
+<id>urn:hash:md5:$md5id</id>
 <updated>$date</updated>"
 
 ./letterfmt.bash

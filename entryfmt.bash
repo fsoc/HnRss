@@ -20,7 +20,6 @@ parse_entry () {
   letterdate=$2
 
   max_comments=100
-  uuid=$(uuidgen)
   has_two_links=$(echo $entry| grep -E '/.*utm_term=([a-z]*).*utm_term=([a-z]*)'| wc -l)
   if [ "$has_two_links" -lt 1 ] 
   then
@@ -49,6 +48,7 @@ parse_entry () {
     fi
   fi
 
+  md5id=$(echo $text$url |md5sum |sed -E 's/\s.*//')
   # use curl for comments
   comments=$(curl $commentsurl -L -s| head -n $max_comments)
 
@@ -71,7 +71,7 @@ parse_entry () {
   echo  "<entry>
   <title>$type $title</title>
   <link href=\"$url\"/>
-  <id>urn:uuid:$uuid</id>
+  <id>urn:hash:md5:$md5id</id>
   <updated>$date</updated>
   <summary type=\"html\"><![CDATA[
   $entry
