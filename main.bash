@@ -8,8 +8,10 @@ curl -s -L $rssfeed > feed.xml
 csplit -q -f hnletter feed.xml '/<item>/' {*}
 mv hnletter* letters
 
-md5id=$(cat feed.xml |grep pubDate |head -n 1 |md5sum |sed -E 's/\s.*//')
-date=$(date +"%Y-%m-%dT%H:%M:%SZ")
+pubDate=$(cat feed.xml |grep pubDate |head -n 2| tail -n 1| sed -E 's/<pubDate>(.*) \+0000<\/pubDate>/\1/')
+md5id=$(echo $pubDate |md5sum |sed -E 's/\s.*//')
+# dates, we need to parse rfc 2822 to iso 8601 fmt to get real dates
+date=$(date --date "$pubDate" +"%Y-%m-%dT%H:%M:%SZ")
 
 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 <feed xmlns=\"http://www.w3.org/2005/Atom\">
@@ -22,6 +24,6 @@ echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 <id>urn:hash:md5:$md5id</id>
 <updated>$date</updated>"
 
-./letterfmt.bash
+./letterfmt.bash $date
 
 echo '</feed>'

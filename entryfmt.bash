@@ -17,7 +17,7 @@ uri_escape () {
 
 parse_entry () {
   entry=$(cat $1)
-  letterdate=$2
+  date=$2
 
   max_comments=100
   has_two_links=$(echo $entry| grep -E '/.*utm_term=([a-z]*).*utm_term=([a-z]*)'| wc -l)
@@ -62,9 +62,6 @@ parse_entry () {
   url=$(uri_escape "$url")
   title=$(uri_escape "$title")
 
-  # dates, we need to parse rfc 2822 to iso 8601 fmt to get real dates
-  date=$(date +"%Y-%m-%dT%H:%M:%SZ")
-
   # limit size of text
   text=$(echo $text| head -c 3000K)
 
@@ -81,9 +78,9 @@ parse_entry () {
   </entry>"
 }
 
-letterdate=$1
+date=$1
 
 for entry in *
 do
-  parse_entry $entry "$letterdate"
+  parse_entry $entry "$date"
 done
