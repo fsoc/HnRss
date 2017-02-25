@@ -16,10 +16,10 @@ do
       mkdir -p entries/letter$counter
       mv entry* entries/letter$counter
 
-      letterdate=$(cat $letter| grep pubDate| sed -E 's/<pubDate>(.*) \+0000<\/pubDate>/\1/')
+      date=$1
 
       cd entries/letter$counter
-      ../../../entryfmt.bash "$letterdate"
+      ../../../entryfmt.bash "$date"
       cd ../..
 
     fi
