@@ -16,6 +16,5 @@ Wanted to test a simple way of building an small application
 ## Size Limitations
 Due to limits in rss readers the size is kept down for every post
 * Only formats the latest newsletter
-* Only the first 100 lines of comments
-* Cuts of text at 3000KiB
+* Cuts comments and text at 3000KiB
 
