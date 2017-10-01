@@ -51,7 +51,9 @@ parse_entry () {
   md5id=$(echo $text$url |md5sum |sed -E 's/\s.*//')
   # use curl for comments
   sleep 2
-  comments=$(curl $commentsurl -L -s| head -n $max_comments)
+  hnid=$(echo $commentsurl |sed -E 's/.*id=([0-9]*).*/\1/')
+  responsivecommentsurl=http://neilmagee.com/project/hn/comments.php?id=$hnid
+  comments=$(curl $responsivecommentsurl -L -s| head -c 3000K)
 
   # remove any CDATA entries
   text=$(echo $text| sed -E 's/<!\[CDATA\[//g')
@@ -72,6 +74,7 @@ parse_entry () {
   <id>urn:hash:md5:$md5id</id>
   <updated>$date</updated>
   <summary type=\"html\"><![CDATA[
+  <a href="http://unvis.it/$url">http://unvis.it/$url</a>
   $entry
   $text
   $comments
