@@ -50,6 +50,7 @@ parse_entry () {
 
   md5id=$(echo $text$url |md5sum |sed -E 's/\s.*//')
   # use curl for comments
+  sleep 2
   comments=$(curl $commentsurl -L -s| head -n $max_comments)
 
   # remove any CDATA entries
