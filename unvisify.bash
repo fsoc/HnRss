@@ -11,5 +11,6 @@ then
   loading=$(echo $data| grep "Loading page, please wait..."|wc -l)
 fi
 
-data=$(echo $data|sed -E 's/(.*)<div class="header container">.*<\/div> (<div class="container">.*)/\1\2/')
+# Only show content
+data=$(echo $data|sed -E 's/(.*)<div class="header container">.*<\/div> (<div class="container">.*)/\2/')
 echo $data
