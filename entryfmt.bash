@@ -48,7 +48,7 @@ parse_entry () {
     fi
   fi
 
-  md5id=$(echo $text$url |md5sum |sed -E 's/\s.*//')
+  md5id=$(echo $url |md5sum |sed -E 's/\s.*//')
   # use curl for comments
   sleep 2
   hnid=$(echo $commentsurl |sed -E 's/.*id=([0-9]*).*/\1/')
