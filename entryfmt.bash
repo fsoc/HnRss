@@ -55,6 +55,9 @@ parse_entry () {
   responsivecommentsurl=http://neilmagee.com/project/hn/comments.php?id=$hnid
   comments=$(curl $responsivecommentsurl -L -s| head -c 3000K)
 
+  # format comment headers
+  comments=$(echo $comments |sed -E 's/(<span\sclass\=\"comment__user\">[^<]*<\/span><span\sclass\=\"comment__time-ago\">[^<]*<\/span>)/<h3>\1<\/h3>/')
+
   # remove any CDATA entries
   text=$(echo $text| sed -E 's/<!\[CDATA\[//g')
   text=$(echo $text| sed -E 's/\]\]>//g')
